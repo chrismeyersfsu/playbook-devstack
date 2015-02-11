@@ -13,5 +13,5 @@
   roles:
     # The below demonstrates how we can control the role behavior.
     # We could have done the below in one call "- role: devstack" would invoke setup and nova instance creation
-    - { role: chrismeyersfsu.devstack, nova_setup: true, nova_groups: undefined, tags: devstack_setup }
+    - { role: chrismeyersfsu.devstack, nova_setup: true, nova_groups: false, tags: devstack_setup }
     - { role: chrismeyersfsu.devstack, nova_setup: false, tags: devstack_nova }
