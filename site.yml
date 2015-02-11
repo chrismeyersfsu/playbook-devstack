@@ -8,7 +8,7 @@
 
 - name: "Bring up devstack"
   gather_facts: false
-  hosts: devstack
+  hosts: all
   remote_user: ubuntu
   roles:
     # The below demonstrates how we can control the role behavior.
