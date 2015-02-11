@@ -1,0 +1,34 @@
+- name: Launch ec2 instance
+  ec2:
+    key_name: "{{ ec2_key }}"
+    instance_type: "{{ ec2_instance_type }}"
+    image: "{{ ec2_image }}"
+    wait: yes
+    group_id: "{{ ec2_vpc }}"
+    vpc_subnet_id: "{{ ec2_subnet }}"
+    assign_public_ip: yes
+    region: "{{ ec2_region }}"
+    # Enforcing only 1 instance doesn't seem to work :(
+    instance_tags:
+      Name: "devstack"
+      isDevstack: "true"
+    count_tag: 
+      isDevStack: "true"
+    exact_count: 1
+  register: ec2
+
+- name: Wait for SSH to come up
+  wait_for: host={{ item.public_dns_name }} port=22 delay=120 timeout=320 state=started
+  with_items: ec2.instances
+
+- name: Add ec2 host to inventory
+  #add_host: hostname={{ item.public_dns_name }} ansible_ssh_private_key_file={{ ec2_key_file }} groups=ec2hosts
+  add_host: hostname={{ item.public_dns_name }} groups=ec2hosts
+  with_items: ec2.instances
+
+- name: associate new elastic IPs with each of the ec2 instances
+  ec2_eip: "instance_id='{{ item }}' public_ip='{{ ec2_elastic_ip }}' in_vpc=yes region='{{ ec2_region }}' state=present reuse_existing_ip_allowed=yes"
+  with_items: ec2.instance_ids
+
+  # Let the change take effect
+- pause: seconds=20

@@ -1,0 +1,10 @@
+---
+#ec2_key_file: "/home/meyers/Dropbox/.ssh/Ansible_chris_meyers.pem"
+
+ec2_key: "Ansible_chris_meyers"
+ec2_region: us-east-1
+ec2_instance_type: "m3.medium"
+ec2_image: "ami-9a562df2" # Ubuntu 14.04
+ec2_elastic_ip: "52.0.56.95"
+ec2_vpc: "sg-12238076"
+ec2_subnet: "subnet-c399f3f9"
