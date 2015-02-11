@@ -1,1 +1,2 @@
 *.sublime-*
+roles/common/vars/main.yml
