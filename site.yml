@@ -7,9 +7,9 @@
     - { role: common, tags: ec2 }
 
 - name: "Bring up devstack"
-  gather_facts: false
   hosts: all
-  remote_user: ubuntu
+  remote_user: centos
+#  remote_user: ubuntu
   roles:
     # The below demonstrates how we can control the role behavior.
     # We could have done the below in one call "- role: devstack" would invoke setup and nova instance creation
