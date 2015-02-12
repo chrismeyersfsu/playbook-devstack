@@ -11,6 +11,10 @@ To verify the install go to http://devstack.testing.ansible.com and login with d
 
 The key specified in `ec2_key` must be available to the playbook.
 
+##Dependencies
+
+[devstack](https://galaxy.ansible.com/list#/roles/2858) role
+
 ##Example Playbook Invocations
 
 Only install devstack.
