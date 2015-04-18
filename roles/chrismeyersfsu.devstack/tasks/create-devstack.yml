@@ -1,0 +1,66 @@
+---
+
+- name: Install dependencies
+  sudo: yes
+  apt: "name={{ item }} state=installed update_cache=yes"
+  with_items:
+    - git
+    - python-pip
+  when: ansible_os_family == 'Debian'
+
+- name: Install dependencies
+  sudo: yes
+  yum: "name={{ item }} state=installed update_cache=yes"
+  with_items:
+    - git
+    - libselinux-python
+  when: ansible_os_family == 'RedHat'
+
+- name: remove pip for centos ... devstack will install pip
+  sudo: yes
+  yum: "name={{ item }} state=absent"
+  with_items:
+    - python-pip
+    - python-urllib3
+  when: ansible_os_family == 'RedHat'
+
+- name: install pip
+  sudo: yes
+  shell: "curl https://raw.githubusercontent.com/pypa/pip/master/contrib/get-pip.py | sudo python2.7 -"
+
+- name:
+  sudo: yes
+  shell: "pip install --upgrade --force-reinstall urllib3 requests"
+
+- name: Remove devstack repo
+  command: "rm -rf {{ devstack_dir }}"
+  sudo: yes
+
+- name: Clone devstack
+  git: "repo='https://github.com/openstack-dev/devstack.git' dest='{{ devstack_dir }}' recursive=yes force=yes version='{{ devstack_version }}'"
+
+- name: Create stack user
+  sudo: yes
+  command: "{{ devstack_dir }}/tools/create-stack-user.sh"
+  environment:
+    STACK_USER: "{{ devstack_user }}"
+
+- name: Change ownerships of git repo to stack user
+  sudo: yes
+  file: "path='{{ devstack_dir }}' owner={{ devstack_user }} group={{ devstack_user }} recurse=true"
+
+- name: Copy openstack config script
+  template: "src='local.j2' dest='{{ devstack_dir }}/local.conf'"
+  sudo: yes
+  sudo_user: "{{ devstack_user }}"
+
+- name: unstack before we stack
+  sudo: yes
+  shell: "{{ devstack_dir }}/unstack.sh"
+  sudo_user: "{{ devstack_user }}"
+
+  # path hack to work on centos 7
+- name: Run openstack init script
+  shell: "{{ devstack_dir }}/stack.sh"
+  sudo: yes
+  sudo_user: "{{ devstack_user }}"
