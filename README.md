@@ -8,7 +8,7 @@ ansible-playbook site.yml -i inventory.devstack --extra-vars="nova_password=<you
 To verify the install go to http://devstack.testing.ansible.com and login with demo / `<yourpasswordhere>` Select demo from the Projects dropdown. Then select Project -> Compute -> Instances from the navigation on the left. You should see 3 autobot westcoast servers and 2 deceptacon eastcoast servers. These instances should appear when you run nova.py below.
 
 ##Requirements
-`sudo pip install python-novaclient`
+`sudo apt-get install python-novaclient` Note: pip python-novaclient will not work.
 The key specified in `ec2_key` must be available to the playbook via inventory.devstack `ansible_ssh_private_key_file`.
 
 ##Dependencies
